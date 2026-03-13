@@ -1,14 +1,15 @@
 import os
-from flask import Flask
+from flask import Flask, jsonify
 app = Flask(__name__)
 
 @app.route("/")
 def main():
-    return "Welcome!"
+    return jsonify({"message": "Welcome!"})
 
-@app.route('/how are you')
+@app.route('/how-are-you')
 def hello():
-    return 'I am good, how about you?'
+    return jsonify({"message": "I am good, how about you?"})
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get("FLASK_RUN_PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
