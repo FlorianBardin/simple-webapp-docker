@@ -1,9 +1,22 @@
-FROM ubuntu:20.04
+FROM python:3.12-alpine
 
-RUN apt-get update && apt-get install -y python3 python3-pip
+ENV PYTHONDONTWRITEBYTECODE=1 \
+	PYTHONUNBUFFERED=1 \
+	PIP_NO_CACHE_DIR=1 \
+	FLASK_APP=app.py \
+	FLASK_RUN_HOST=0.0.0.0 \
+	FLASK_RUN_PORT=8080
 
-RUN pip install flask 
+WORKDIR /app
 
-COPY app.py /opt/
+RUN pip install --no-cache-dir Flask \
+	&& addgroup -S app \
+	&& adduser -S app -G app
 
-ENTRYPOINT FLASK_APP=/opt/app.py flask run --host=0.0.0.0 --port=8080
+COPY app.py ./
+
+USER app
+
+EXPOSE 8080
+
+CMD ["python", "-m", "flask", "run"]
